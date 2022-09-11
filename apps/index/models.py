@@ -43,3 +43,14 @@ class PedidoModel(models.Model):
 
     class Meta:
         db_table = 'pedidos'
+
+class CarritoModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    platillos = models.ManyToManyField(PlatilloModel)
+    ingredientes = models.ManyToManyField(IngredienteModel)
+    # user
+    total = models.FloatField()
+
+    class Meta:
+        db_table = 'carrito'
+        ordering = ['id']

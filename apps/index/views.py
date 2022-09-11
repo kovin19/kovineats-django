@@ -1,12 +1,14 @@
-from contextlib import redirect_stderr
 from datetime import datetime
-from random import seed, random
-from http.client import HTTPResponse
-from django.shortcuts import render,redirect
+from random import random
+from django.shortcuts import redirect
 from django.views.generic import ListView, View
+from rest_framework.views import APIView
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 
-from apps.index.forms import PedidoForm
-from .models import IngredienteModel, PedidoModel, RestauranteModel, PlatilloModel
+from apps.index.forms import CarritoForm, PedidoForm
+from .models import CarritoModel, IngredienteModel, PedidoModel, RestauranteModel, PlatilloModel
 
 # Create your views here.
 
@@ -21,6 +23,8 @@ class IndexView(ListView):
         context['platillos'] = PlatilloModel.objects.all()
         context['restaurantes'] = RestauranteModel.objects.all()
         context['ingredientes'] = IngredienteModel.objects.all()
+        context['carrito'] = CarritoModel.objects.all()
+        context['productosCarrito'] = CarritoModel.objects.all().count()
         return context
 
 
@@ -68,3 +72,12 @@ class ShowPedidos(ListView):
         context['ingredientes'] = IngredienteModel.objects.all()
         context['platillos'] = IngredienteModel.objects.all()
         return context
+
+class AddToCart(APIView):
+    
+    def post(self, request):
+        carrito_form = CarritoForm(request.POST)
+        if carrito_form.is_valid():
+            carrito_form.save()
+            messages.success(request, '¡WEBOS!') 
+        return HttpResponseRedirect(reverse_lazy('index:index'))
