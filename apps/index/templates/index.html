@@ -176,40 +176,48 @@
         <!-- Modal Carrito -->
         <div class="modal fade modal-dialog-scrollable" id="modalCarrito" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-shopping-cart"></i>&nbsp;Carrito</h5>
-                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        {% for producto in carrito %}
-                            {% for platillo in producto.platillos.all %}
-                                <div class="row" style="margin-right:5%;">
-                                    <div class="col">
-                                        <img src="{{platillo.logo_url}}" class="img-thumbnail" width="70%" height="70%" alt="platillo">
-                                    </div>
-                                    <div class="col align-self-md-center">
-                                        <p>{{platillo.nombre}}</p>
-                                    </div>
-                                    <div class="col align-self-md-center">
-                                        <p class="d-flex flex-row-reverse" name="preciosCarrito" data-precio="{{platillo.precio}}">${{platillo.precio}}</p>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                    <div class="modal-footer">
-                        <div class="row">
-                            <h3>Total: $130.00</h3>
+                <form action="{% url 'index:create' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-shopping-cart"></i>&nbsp;Carrito</h5>
+                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="row">
-                            <p class="d-flex justify-content-center">Por el momento solo se aceptan pagos en efectivo</p>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary" style="width: fit-content;">Ordenar</button>
+                        <div class="modal-body">
+                            {% for producto in carrito %}
+                                {% for platillo in producto.platillos.all %}
+                                    <div class="row" style="margin-right:5%;">
+                                        <div class="col">
+                                            <img src="{{platillo.logo_url}}" class="img-thumbnail" width="70%" height="70%" alt="platillo">
+                                        </div>
+                                        <div class="col align-self-md-center">
+                                            <p>{{platillo.nombre}}</p>
+                                        </div>
+                                        <div class="col align-self-md-center">
+                                            <p class="d-flex flex-row-reverse" name="preciosCarrito" data-precio="{{platillo.precio}}">${{platillo.precio}}</p>
+                                            <input type="hidden" name="total" value="{{platillo.precio}}">
+                                            {% for ingrediente in producto.ingredientes.all %}
+                                            <input type="hidden" name="ingredientes" value="{{ingrediente.id}}">
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="platillos" value="{{platillo.id}}">
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <h3>Total: $130.00</h3>
+                            </div>
+                            <div class="row">
+                                <p class="d-flex justify-content-center">Por el momento solo se aceptan pagos en efectivo</p>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary" style="width: fit-content;">Ordenar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <!-- End Modal -->
@@ -219,6 +227,9 @@
                 <script>
                     if ('{{message.tags}}' === 'success') {
                         swal("Agregado al carrito", "Se ha agregado al carrito", "success");
+                    }
+                    if('{{mesage.tags}}' === 'info') {
+                        swal("Pedido realizado", "El restaurante preparará el pedido", "info");
                     }
                 </script>
             {% endfor %}

@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+# All this classes are used to define the database
+# models needed for this project
 class IngredienteModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     nombre = models.CharField(max_length=255)

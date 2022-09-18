@@ -84,8 +84,10 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for ingrediente in pedido.ingredientes.all %}
-                            <p>{{ingrediente.nombre}}</p>
+                            {% for platillo in pedido.platillos.all %}
+                                {% for ingrediente in platillo.ingredientes.all %}
+                                <p>{{ingrediente.nombre}}</p>
+                                {% endfor %}
                             {% endfor %}
                         </td>
                         <td>

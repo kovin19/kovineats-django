@@ -7,6 +7,8 @@ class PedidoForm(forms.ModelForm):
         model = PedidoModel
         fields = ['total','platillos','ingredientes']
 
+# This form is for validating the data
+# in the modal
 class CarritoForm(forms.ModelForm):
 
     class Meta:

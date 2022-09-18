@@ -3,6 +3,7 @@ from .views import IndexView, CreatePedido, ShowPedidos, AddToCart
 
 app_name = 'index'
 
+# These are the urls used in the project
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('crearPedido/', CreatePedido.as_view(), name='create'),
