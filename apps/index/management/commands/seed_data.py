@@ -206,4 +206,5 @@ def run_seed(self, mode):
     create_restaurantes()
     create_ingredientes()
     create_platillos()
+    create_repartidor()
     print('Se ha terminado de plantar la informacion')
