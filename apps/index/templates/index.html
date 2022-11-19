@@ -13,7 +13,7 @@
     <!-- MDB -->
     <head>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.4.0/mdb.min.js"></script>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -42,7 +42,7 @@
         
                 <div class="btn-group btn-group-lg" role="group">
                     <button type="button" class="btn btn-primary d-flex justify-content-end" 
-                        data-mdb-toggle="modal" data-mdb-toggle="modal" data-mdb-target="#modalCarrito" onclick="calcularTotal()">
+                        data-mdb-toggle="modal" data-mdb-toggle="modal" data-mdb-target="#modalCarrito" onclick="">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="badge rounded-pill badge-notification bg-danger">{{productosCarrito}}</span>
                     </button>
@@ -222,20 +222,37 @@
         </div>
         <!-- End Modal -->
 
-        {% if messages %}
-            {% for message in messages %}
-                <script>
-                    if ('{{message.tags}}' === 'success') {
-                        swal("Agregado al carrito", "Se ha agregado al carrito", "success");
-                    }
-                    if('{{mesage.tags}}' === 'info') {
-                        swal("Pedido realizado", "El restaurante preparará el pedido", "info");
-                    }
-                </script>
-            {% endfor %}
-        {% endif %}
-
         {% block js %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <script>
+                        let title = "";
+                        if("{{message.tags}}" === 'error'){
+                            title = "¡Error!";
+                        }
+                        if ('{{message.tags}}' === 'success'){
+                            title = "¡Agregado al carrito!";
+                        }
+                        if ("{{message.tags}}" === 'warning'){
+                            title = "¡Advertencia!";
+                        }
+                        if ("{{message.tags}}" === 'info'){
+                            title = "¡Pedido realizado!";
+                        }
+            
+                        Swal.fire({
+                            title: title,
+                            text: '{{message}}',
+                            type: '{{message.tags}}',
+                            icon: '{{message.tags}}',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#1266f1',
+                        });
+                    </script>
+                {% endfor %}
+            {% endif %}
+
             <script type="text/javascript">
                 function cargarModal(id) {
                     const modalId = "modalIngredientes" + id;

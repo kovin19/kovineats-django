@@ -84,7 +84,7 @@ class CreatePedido(View):
         pedido.folio = self.generate_folio(pedido.id)
         pedido.save()
         CarritoModel.objects.all().delete()
-        messages.info(request, 'Pedido realizado. El restaurante preparará la orden.')
+        mensaje = messages.info(request, 'Pedido realizado. El restaurante preparará la orden.')
 
 
         # This method was for ordering just one platillo at the time
@@ -123,8 +123,8 @@ class AddToCart(APIView):
     def post(self, request):
         carrito_form = CarritoForm(request.POST)
         if carrito_form.is_valid():
-            carrito_form.save()
-            messages.success(request, '¡WEBOS!') 
+            carrito_form.save() 
+            messages.success(request, 'El platillo se ha agregado al carrito.')
         return HttpResponseRedirect(reverse_lazy('index:index'))
 
 class AsignarPedido(APIView):
