@@ -1,16 +1,20 @@
 from ast import Delete
 from django.db.models import Q
-from datetime import datetime
+from datetime import datetime,timezone
 from random import random
 from django.shortcuts import redirect
 from django.views.generic import ListView, View
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
+import json, pytz
 
 from apps.index.forms import CarritoForm, PedidoForm
-from .models import CarritoModel, IngredienteModel, PedidoModel, RestauranteModel, PlatilloModel
+from .models import CarritoModel, IngredienteModel, PedidoModel, RestauranteModel, PlatilloModel, RepartidorModel
+from .serializers import PedidoSerializer, RepartidorSerializer
 
 # Create your views here.
 
@@ -59,10 +63,10 @@ class CreatePedido(View):
         #             print(ingrediente)
         total = request.POST.getlist('total')
         
-        fecha_pedido = datetime.today().strftime('%Y-%m-%d')
+        fecha_pedido = datetime.now()
         repartidor = self.generate_repartidor()
 
-        pedido = PedidoModel.objects.create(total=total[0], repartidor = repartidor, fecha_pedido = fecha_pedido)
+        pedido = PedidoModel.objects.create(total=total[0], repartidor = '')
 
         # In this method we go through the platillos in the carrito
         # we get the platillo object and filter the ingredientes, adding them to
@@ -80,7 +84,7 @@ class CreatePedido(View):
         pedido.folio = self.generate_folio(pedido.id)
         pedido.save()
         CarritoModel.objects.all().delete()
-        messages.info(request, 'Pedido hecho')
+        messages.info(request, 'Pedido realizado. El restaurante preparará la orden.')
 
 
         # This method was for ordering just one platillo at the time
@@ -122,3 +126,34 @@ class AddToCart(APIView):
             carrito_form.save()
             messages.success(request, '¡WEBOS!') 
         return HttpResponseRedirect(reverse_lazy('index:index'))
+
+class AsignarPedido(APIView):
+
+    # def get(self, request):
+    #     print(request.POST)
+    #     return Response({"message":"hola"})
+
+    def post(self, request):
+        repartidor = RepartidorModel.objects.filter(acepta_pedidos=True).first()
+        pedido = PedidoModel.objects.filter(activo=True).first()
+        pedido_serializer = PedidoSerializer(data=pedido.__dict__, instance=pedido)
+        if pedido_serializer.is_valid():
+            pedido_instance = pedido_serializer.save(activo=False, repartidor_id=repartidor)
+            repartidor.acepta_pedidos = False
+            repartidor.save()
+            return Response(pedido_serializer.data)
+        return Response({"Message":"Not found"})
+
+class EntregarPedido(APIView):
+
+    def post(self, request):
+        pedido_id = request.data['id']
+        pedido = PedidoModel.objects.get(id=pedido_id)
+        print(pedido.fecha_pedido.replace(tzinfo=None))
+        fecha_pedido = pedido.fecha_pedido
+        difference = datetime.utcnow().replace(tzinfo=pytz.UTC) - fecha_pedido.replace(tzinfo=pytz.UTC)
+        pedido.hora_entrega = datetime.now()
+        pedido.tiempo_entrega = difference
+        pedido.activo = False
+        pedido.save()
+        return Response(200)

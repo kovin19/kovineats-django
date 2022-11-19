@@ -222,18 +222,6 @@
         </div>
         <!-- End Modal -->
 
-        {% if messages %}
-            {% for message in messages %}
-                <script>
-                    if ('{{message.tags}}' === 'success') {
-                        swal("Agregado al carrito", "Se ha agregado al carrito", "success");
-                    }
-                    if('{{mesage.tags}}' === 'info') {
-                        swal("Pedido realizado", "El restaurante preparará el pedido", "info");
-                    }
-                </script>
-            {% endfor %}
-        {% endif %}
 
         {% block js %}
             <script type="text/javascript">
@@ -244,6 +232,15 @@
                     modal.show()
                 }
             </script>
+
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
             <script src="{% static 'assets/js/carrito.js' %}"></script>
         {% endblock %}
 

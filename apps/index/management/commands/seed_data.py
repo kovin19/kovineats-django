@@ -1,6 +1,6 @@
 from ast import Delete
 from django.core.management.base import BaseCommand
-from apps.index.models import PlatilloModel, PedidoModel, RestauranteModel, IngredienteModel
+from apps.index.models import PlatilloModel, PedidoModel, RepartidorModel, RestauranteModel, IngredienteModel
 
 # python manage.py seed --mode=refresh
 
@@ -181,6 +181,17 @@ def create_platillos():
     platillo.save()
     print('Platillo 6 creado')
     print('Platillos creados')
+
+def create_repartidor():
+    print('Creando repartidor')
+
+    RepartidorModel.objects.create(
+        nombre='Adrian',
+        apellido_paterno='Ibarra',
+        apellido_materno='Lopez',
+    )
+
+    print('Repartidor creado')
 
 def run_seed(self, mode):
     """ Seed database based on mode

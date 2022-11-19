@@ -71,6 +71,7 @@
                 <th>Repartidor</th>
                 <th>Método de pago</th>
                 <th>Total</th>
+                <th>Activo</th>
             </thead>
             <tbody>
                 {% for pedido in pedidos %}
@@ -101,6 +102,15 @@
                         </td>
                         <td>
                             <p>{{pedido.total}}</p>
+                        </td>
+                        <td>
+                            <div>
+                                {%if pedido.activo%}
+                                <i class="fas fa-check"></i>
+                                {%else%}
+                                <i class="fas fa-times"></i>
+                                {%endif%}
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
