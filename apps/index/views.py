@@ -157,3 +157,13 @@ class EntregarPedido(APIView):
         pedido.activo = False
         pedido.save()
         return Response(200)
+
+class PedidoEntregado(ListView):
+    model = PedidoModel
+    template_name = 'pedidos_entregados.html'
+    context_object_name = 'pedidos'
+
+    def get_queryset(self):
+        queryset = PedidoModel.objects.filter(Q(tiempo_entrega__isnull=False))
+        print(queryset)
+        return queryset

@@ -59,7 +59,7 @@
         </nav>
 
         <div style="margin-top: 1%;margin-bottom: 1%;margin-left: 1%;margin-right: 1%;">
-            <h1>Pedidos</h1>
+            <h1>Pedidos entregados</h1>
         </div>
 
         <table class="table">
@@ -71,7 +71,8 @@
                 <th>Repartidor</th>
                 <th>Método de pago</th>
                 <th>Total</th>
-                <th>Activo</th>
+                <th>Hora de entrega</th>
+                <th>Tiempo de entrega</th>
             </thead>
             <tbody>
                 {% for pedido in pedidos %}
@@ -105,15 +106,13 @@
                         </td>
                         <td>
                             <div>
-                                {%if pedido.activo%}
-                                <i class="fas fa-check"></i>
-                                {%else%}
-                                <i class="fas fa-times"></i>
-                                {%endif%}
+                                {{pedido.hora_entrega}}
                             </div>
                         </td>
                         <td>
-                            {{pedido.fecha_entrega}}
+                            <div>
+                                {{pedido.tiempo_entrega}}
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
